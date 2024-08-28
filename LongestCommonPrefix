@@ -1,0 +1,25 @@
+char* longestCommonPrefix(char** strs, int strsSize) {
+
+    char* answer = calloc(201,1);
+    char current = **strs;
+    int answlen = 0;    //the length of the answer / which char in the string is being compared
+    int x;
+
+
+    //*(*(strs + x) + answlen) refers to the current char in the current string in the string array being observed
+    // *(strs + x) refers to the address of a string in the string array
+
+    for(int x = 0; x < strsSize; x++){      //ensures range of x is [0, strsSize - 1]
+
+        if(current !=  *(*(strs + x) + answlen) || current == '\0' ){
+            break;
+        }
+
+        if(x == strsSize - 1){ //reset search: add to answer, reset x, update answlength, get new current starting char
+            *(answer + answlen++) = current; //add char to answer
+            x = 0;
+            current = *(*(strs + x) + answlen);
+        }
+    }
+    return answer;
+}
