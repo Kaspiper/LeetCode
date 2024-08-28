@@ -1,0 +1,87 @@
+/**
+ * Note: The returned array must be malloced, assume caller calls free().
+*/
+struct Pair{
+    int key;                //The identifying trait you search for
+    int value;              //index
+    struct Pair* next;      //Use for chained hashing
+};
+
+int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
+    int* answer;
+    int x;
+    int y;
+    int hashcode;
+    struct Pair** ptr;                              //use for chained hashing traversal
+    struct Pair** freeptr;                              //use for chained hashing free traversal
+    struct Pair** freeArray;
+    int tableSize = numsSize; 
+    if(tableSize % 2 == 0){
+        tableSize++;
+    }
+
+    
+    //initialize Hashtable as array of Bucket pointers
+    struct Pair** hashMap = calloc(tableSize, sizeof(struct Pair*)); 
+
+
+    //initialize FreeArray as array of node pointers
+    freeArray = calloc(numsSize, sizeof(struct Pair*));
+    freeptr = freeArray;
+
+    for(x = 0; x < numsSize; x++){                                      //populate hashTable O(n)
+        hashcode = ((target - *(nums + x)) & 0x7fffffff) % tableSize;    //hashcode is bucket number between 0 and tableSize
+        ptr = hashMap + hashcode;                                       //pointer to item in hashmap
+
+        while( *ptr != NULL && (**ptr).next != NULL){                  
+            ptr = &((**ptr).next);                                     //pointer traversal
+        }
+
+        if(*ptr == NULL){
+            *ptr = calloc(1, sizeof(struct Pair));    
+            *(freeptr++) = *ptr;
+            (**ptr).key = target - *(nums + x);                          //hashtable insertion
+            (**ptr).value = x;
+        }else{
+            
+            (**ptr).next = calloc(1, sizeof(struct Pair));               //Linked list append
+
+            (*(**ptr).next).key = target - *(nums + x);   
+            (*(**ptr).next).value = x;  
+            *(freeptr++) = (**ptr).next;
+        }
+    }
+
+
+    for(y = 0; y < numsSize; y++){                                      //iterate array O(n) doing hash lookup O(1)
+        hashcode = ( *(nums + y) & 0x7fffffff ) % tableSize;
+        ptr = hashMap + hashcode;    
+
+        while( *ptr != NULL && (**ptr).key != *(nums + y)){  
+            ptr = &((**ptr).next);                                           //chained hashing traversal
+        }
+        if(*ptr != NULL && (**ptr).key == *(nums + y) && (**ptr).value != y ){
+           break;
+        }
+    }
+
+    //malloc, populate answer
+    *returnSize = 2;
+    answer = malloc(2 * sizeof(int));
+    *answer = y;
+    *(answer + 1) = (**ptr).value; 
+
+
+    // freeptr = freeArray;
+    // for(x = 0; x < numsSize; x++){
+    //     free( *(freeptr + x) );
+   
+    // }
+    // free(freeArray);
+    // free(hashMap);
+    
+
+
+    
+    return answer;
+}
