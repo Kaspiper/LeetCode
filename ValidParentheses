@@ -1,0 +1,39 @@
+struct Node{
+    char brackett;
+    struct Node* prev;
+};
+
+bool isValid(char* s) {
+    struct Node* tempNode;
+    struct Node* StackTop = NULL;
+    char tempChar;
+    char* sPtr = s;
+    while(*sPtr != NULL){
+        
+        if(*sPtr == '(' || *sPtr == '{' || *sPtr == '[' ){          //push if next character is an open bracket
+            tempNode = malloc( sizeof(struct Node) );          
+            (*tempNode).brackett = *(sPtr);
+            (*tempNode).prev = StackTop;
+            StackTop = tempNode;
+
+
+        }else{  
+            //pop   StackTop holds the opening brackett
+            if(StackTop == NULL){
+                return false;
+            }else{
+                if((*StackTop).brackett + 0x1 == (*sPtr) || (*StackTop).brackett + 0x2 == (*sPtr) ){  
+                    //compare StackTop char to string Pointer char 
+                    //closing brackett is one or two away in the ascii table
+                    //If value of StackTop is not a closing brackett then return false
+                    //free()
+                    StackTop = (*StackTop).prev;
+                }else{
+                    return false;
+                }
+            }
+        } 
+        sPtr++; 
+    }
+    return (StackTop == NULL);      //stack should be empty, return true if empty and false elsewise
+}
