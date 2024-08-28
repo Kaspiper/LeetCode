@@ -1,0 +1,23 @@
+char* gcdOfStrings(char* str1, char* str2) {
+    char* str1ptr = str1;
+    char* str2ptr = str2;
+    while(*str1ptr == *str2ptr && *str1ptr && *str2ptr){
+        str1ptr++;
+        str2ptr++; 
+    }
+
+    if(*str1ptr){  
+        if(*str2ptr){
+            *str1 = 0;
+            return str1;
+        }else{
+            return gcdOfStrings(str1ptr, str2);
+        }
+    }else{
+        if(*str2ptr){
+            return gcdOfStrings(str1, str2ptr);
+        }else{
+            return str1;
+        }
+    }
+}
