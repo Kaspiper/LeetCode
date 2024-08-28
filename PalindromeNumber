@@ -1,0 +1,21 @@
+bool isPalindrome(int x) {
+    int digit;
+    int copy = x;
+    int rev = 0;
+    if( !(x < 0) ){
+        while(copy >= 10){
+            digit = copy % 10;          //gets the ones place digit
+            copy = copy / 10;           //removes the ones place digit
+            rev = (rev * 10) + digit;   //pushes the digit to the "rev stack"
+        }
+
+        if(copy == ( x % 10 ) && (x / 10) == rev ){
+            return true;
+        }
+    }
+
+    
+
+    return false;
+
+}
